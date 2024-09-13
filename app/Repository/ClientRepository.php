@@ -6,7 +6,7 @@ use App\Models\Client;
 use App\Repository\Interfaces\ClientRepositoryInterface;
 use App\Exceptions\RepositoryException;
 use App\Enums\CompteStatus;
-
+use App\Exceptions\ClientNotFoundException;
 class ClientRepository implements ClientRepositoryInterface
 {
 
@@ -28,8 +28,6 @@ class ClientRepository implements ClientRepositoryInterface
 {
     try {
         $client = Client::create($data);
-
-        // L'Observer se chargera de créer l'utilisateur si nécessaire
 
         return $client;
     } catch (\Exception $e) {
@@ -55,5 +53,31 @@ class ClientRepository implements ClientRepositoryInterface
             return true;
         }
         return false;
+    }
+
+
+    public function findByTelephone(string $telephone): Client
+    {
+        $client = Client::where('telephone', $telephone)->first();
+        if (!$client) {
+            throw new RepositoryException("Aucun client trouvé avec ce numéro de téléphone.");
+        }
+        return $client;
+    }
+
+
+    public function getClientWithDette(int $id)
+    {
+        return Client::with('dettes')->findOrFail($id);
+    }
+
+    public function getClientsWithDebts()
+    {
+        return Client::has('dettes')->with('dettes')->paginate();
+    }
+
+    public function getClientWithUser(int $id)
+    {
+        return Client::with('user')->findOrFail($id);
     }
 }

@@ -2,56 +2,60 @@
 
 namespace App\Observers;
 
+use App\Facades\RoleServiceFacade;
+use App\Facades\UserServiceFacade;
 use App\Models\Client;
-use App\Models\User;
+use Illuminate\Support\Facades\Log;
 
 class ClientObserver
 {
     /**
-     * Handle the Client "creating" event.
-     *
-     * @param  \App\Models\Client  $client
-     * @return void
+     * Handle the Client "created" event.
      */
-    // public function creating(Client $client)
-    // {
-    //     if (request()->has('user')) {
-    //         // dd("this is a test ");
-    //         $userData = request()->input('user');
-    //         $user = User::create($userData);
-    //         $client->user_id = $user->id;
-    //     }
-    // }
-
-    public function creating(Client $client)
+    public function created(Client $client): void
     {
-        if (request()->has('user')) {
-            $userData = request()->input('user');
+        //
+        Log::info("ClientObserver created");
+        $data = request()->all();
+        if (isset($data["user"])) {
+            Log::info("ClientObserver created client with user");
+            $userData = $data["user"];
+            $userData["role_id"] = RoleServiceFacade::getRoleIdByName("client"); 
 
-            // Vérifier si l'utilisateur existe déjà
-            $existingUser = User::where('email', $userData['email'])->first();
-
-            if ($existingUser) {
-                // Si l'utilisateur existe, associez-le simplement au client
-                $client->user_id = $existingUser->id;
-            } else {
-                // Si l'utilisateur n'existe pas, créez-en un nouveau
-                $userData['role_id'] = 3;
-
-                if (!isset($userData['password'])) {
-                    $userData['password'] = bcrypt('password_temporaire');
-                }
-
-                // Générer un email unique si nécessaire
-                $baseEmail = $userData['email'];
-                $counter = 1;
-                while (User::where('email', $userData['email'])->exists()) {
-                    $userData['email'] = $baseEmail . '_' . $counter++;
-                }
-
-                $user = User::create($userData);
-                $client->user_id = $user->id;
-            }
+            $user = UserServiceFacade::createUser($userData);
+            $user->client()->save($client);
         }
+    }
+
+    /**
+     * Handle the Client "updated" event.
+     */
+    public function updated(Client $client): void
+    {
+        //
+    }
+
+    /**
+     * Handle the Client "deleted" event.
+     */
+    public function deleted(Client $client): void
+    {
+        //
+    }
+
+    /**
+     * Handle the Client "restored" event.
+     */
+    public function restored(Client $client): void
+    {
+        //
+    }
+
+    /**
+     * Handle the Client "force deleted" event.
+     */
+    public function forceDeleted(Client $client): void
+    {
+        //
     }
 }

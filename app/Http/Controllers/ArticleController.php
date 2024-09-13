@@ -8,6 +8,9 @@ use App\Models\Article;
 use App\Services\Interfaces\ArticleServiceInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\UpdateStockRequest;
+
+
 
 class ArticleController extends Controller
 {
@@ -70,4 +73,28 @@ class ArticleController extends Controller
 
         return $this->articleService->deleteArticle($article->id);
     }
+
+
+    public function updateStock(UpdateStockRequest $request)
+    {
+        $result = $this->articleService->updateStock($request->validated()['articles']);
+        return response()->json($result, 200);
+    }
+
+
+
+    public function findByTitle(Request $request)
+    {
+        $request->validate([
+            'libelle' => 'required|string'
+        ]);
+        $article = $this->articleService->findByTitle($request->post("libelle"));
+
+        if ($article) {
+            return response()->json($article);
+        } else {
+            return response()->json(['message' => 'Article non trouvé'], 404);
+        }
+    }
+
 }

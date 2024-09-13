@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Dette;
+use Illuminate\Http\Request;
+use App\Services\DetteService;
 use App\Http\Requests\StoreDetteRequest;
 use App\Http\Requests\UpdateDetteRequest;
-use App\Models\Dette;
 use App\Facades\DetteServiceFacade as DetteFacade;
 
 class DetteController extends Controller
@@ -21,12 +23,12 @@ class DetteController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreDetteRequest $request)
-    {
-        //
-        return DetteFacade::createDette($request->validated());
+    // public function store(StoreDetteRequest $request)
+    // {
+    //     //
+    //     return DetteFacade::createDette($request->validated());
 
-    }
+    // }
 
     /**
      * Display the specified resource.
@@ -55,4 +57,10 @@ class DetteController extends Controller
     {
         //
     }
+
+    // public function store(Request $request)
+    // {
+    //     $result = $this->DetteService->createDette($request->all());
+    //     return response()->json($result, $result['status']);
+    // }
 }

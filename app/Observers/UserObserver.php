@@ -3,8 +3,8 @@
 namespace App\Observers;
 
 use App\Events\UserRegistered;
-use App\Jobs\SendWelcomeEmailJob;
 use App\Models\User;
+use Illuminate\Support\Facades\Log;
 
 class UserObserver
 {
@@ -13,11 +13,9 @@ class UserObserver
      */
     public function created(User $user): void
     {
-        // Dispatch l'événement UserRegistered
-        // event(new UserRegistered($user));
-
-        // Ou directement dispatcher le job si vous préférez éviter l'événement
-        // SendWelcomeEmailJob::dispatch($user);
+        //
+        Log::info("UserObserver created");
+        event(new UserRegistered($user));
     }
 
     /**

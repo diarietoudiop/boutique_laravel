@@ -11,7 +11,7 @@ class Dette extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ["montant", "date", "montantVerser", "montantRestant"];
+    protected $fillable = ["montant", "date", "montantVerser", "montantRestant", "client_id"];
     protected $hidden = ["created_at", "updated_at", "deleted_at"];
 
     public function client(){

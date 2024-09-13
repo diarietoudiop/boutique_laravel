@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Facades\Storage;
 use App\Exceptions\CustomValidationException;
+use App\Facades\LocalStorageFacade;
 use App\Services\UploadedFile;
 
 
@@ -19,6 +20,8 @@ use App\Services\UploadedFile;
 class UserService
 {
     protected $userRepository;
+
+    protected const PHOTO_PAR_DEFAUT = "storage/images/avatar.png";
 
     public function __construct(UserRepositoryInterface $userRepository)
     {
@@ -36,13 +39,16 @@ class UserService
     }
 
 
-        public function createUser(array $data)
-        {
-            return $this->userRepository->createUser($data);
+    public function createUser(array $data)
+    {
 
-
-
+        if (isset($data["photo"]))
+            $data["photo"] = LocalStorageFacade::uploadFile($data["photo"]);
+        else {
+            $data["photo"] = self::PHOTO_PAR_DEFAUT;
         }
+        return $this->userRepository->createUser($data);
+    }
 
 
 

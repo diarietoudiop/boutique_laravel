@@ -24,7 +24,7 @@ class WelcomeEmail extends Mailable
     public function __construct($user)
     {
         $this->user = $user;
-        $this->to("diarietou07diop@gmail.com");
+        // $this->to("diarietou07diop@gmail.com");
         Log::info('Envoi de l\'email de bienvenue à l\'utilisateur.', ['user' => $this->user->toArray()]);
     }
 

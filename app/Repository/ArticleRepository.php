@@ -6,6 +6,7 @@ use App\Repository\Interfaces\ArticleRepositoryInterface;
 use App\Models\Article;
 
 class ArticleRepository implements ArticleRepositoryInterface
+
 {
 
     public function getAllArticles($filtrer = [])
@@ -52,4 +53,22 @@ class ArticleRepository implements ArticleRepositoryInterface
         }
         return false;
     }
+
+    public function updateQuantity(Article $article, int $quantite): void
+    {
+        $article->quantite += $quantite;
+        $article->save();
+    }
+
+    public function find(int $id): ?Article
+    {
+        return Article::find($id);
+    }
+
+    public function findByTitle(string $title): ?Article
+    {
+        return Article::where('libelle', $title)->first();
+    }
+
+
 }

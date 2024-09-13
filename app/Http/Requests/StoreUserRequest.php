@@ -28,7 +28,7 @@ class StoreUserRequest extends FormRequest
             'prenom' => 'required|string|max:255',
             'email' => 'required|string|max:255|unique:users,email', // Correction: unique pour l'email
             'role' => ['required', 'in:admin,boutiquier'], // Validation des rôles directement
-            'photo' => 'required|image',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'password' => ['required', 'confirmed', new PasswordRule()], // Ajout de 'required' pour le mot de passe
         ];
     }

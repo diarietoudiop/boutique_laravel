@@ -30,19 +30,24 @@ Route::prefix("v1")->group(function () {
     Route::apiResource("articles", ArticleController::class);
     Route::apiResource("clients", ClientController::class);
     Route::apiResource("dettes", DetteController::class);
+    Route::post('articles/stock', [ArticleController::class, 'updateStock']);
+    Route::post('articles/title', [ArticleController::class, 'findByTitle']);
+
 
 });
 
 
 // use App\Http\Controllers\ClientController;
+
 Route::prefix("v1")->group(function () {
-Route::get('/api/clients', [ClientController::class, 'index']);
-});
-
- 
-Route::get("clients", [ClientController::class, "index"]);
+    Route::get('/api/clients', [ClientController::class, 'index']);
     Route::get("clients/{id}", [ClientController::class, "show"]);
+    Route::get("clients", [ClientController::class, "index"]);
     Route::post("clients/telephone", [ClientController::class, "telephone"]);
-    Route::post("clients/{id}/user", [ClientController::class, "withUser"]);
-    Route::post("clients/{id}/dettes", [ClientController::class, "withDette"]);
+    // Route::post("clients/{id}/user", [ClientController::class, "withUser"]);
+    Route::get('clients/{id}/user', [ClientController::class, 'showWithUser']);
+    Route::get("clients/{id}/dettes", [ClientController::class, "listClientsWithDebts"]);
+    Route::post('/clients/tel', [ClientController::class, 'findByTelephone']);
+    // Route::get("/clients/dette", [ClientController::class, "listClientsWithDebts"]);
 
+});

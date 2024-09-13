@@ -28,7 +28,7 @@ class User extends Authenticatable
     // Constantes pour les rôles
     const ROLE_ADMIN = 'admin';
     const ROLE_CLIENT = 'client';
-    const ROLE_BOUTIQUIER = 'boutiquuier';
+    const ROLE_BOUTIQUIER = 'boutiquier';
 
     // Méthode pour vérifier si l'utilisateur est admin
     public function isAdmin()

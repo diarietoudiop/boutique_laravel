@@ -2,19 +2,23 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
-use App\Services\Interfaces\ClientServiceInterface;
-use App\Services\Interfaces\ArticleServiceInterface;
-use App\Services\Interfaces\UserServiceInterface;
-use App\Services\Interfaces\QrCodeServiceInterface;
-use App\Services\Interfaces\RoleServiceInterface;
-use App\Services\ArticleService;
-use App\Services\ClientService;
-use App\Services\DetteService;
-use App\Services\Interfaces\DetteServiceInterface;
-use App\Services\UserService;
-use App\Services\QrCodeService;
 use App\Services\RoleService;
+use App\Services\UserService;
+use App\Services\DetteService;
+use App\Services\ClientService;
+use App\Services\QrCodeService;
+use App\Services\ArticleService;
+use Illuminate\Support\ServiceProvider;
+use App\Services\CloudFileStorageService;
+use App\Services\LocalFileStorageService;
+use App\Services\Interfaces\RoleServiceInterface;
+use App\Services\Interfaces\UserServiceInterface;
+use App\Services\Interfaces\DetteServiceInterface;
+use App\Services\Interfaces\ClientServiceInterface;
+use App\Services\Interfaces\QrCodeServiceInterface;
+use App\Services\Interfaces\ArticleServiceInterface;
+use App\Services\Interfaces\CloudFileStorageServiceInterface;
+use App\Services\Interfaces\LocalFileStorageServiceInterface;
 
 
 class ServiceServiceProvider extends ServiceProvider
@@ -33,6 +37,8 @@ class ServiceServiceProvider extends ServiceProvider
         $this->app->singleton(QrCodeServiceInterface::class, function ($app) {
             return new QrCodeService();
         });
+        $this->app->bind(LocalFileStorageServiceInterface::class, LocalFileStorageService::class);
+        $this->app->bind(CloudFileStorageServiceInterface::class, CloudFileStorageService::class);
     }
 
     /**

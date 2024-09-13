@@ -14,4 +14,6 @@ interface DetteServiceInterface
     public function updateDette(int $id, array $data);
 
     public function deleteDette(int $id);
+
+    // public function createDette(array $data);
 }

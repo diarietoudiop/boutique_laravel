@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Services\Interfaces\ArticleServiceInterface;
 use App\Repository\Interfaces\ArticleRepositoryInterface;
+use App\Models\Article;
 
 class ArticleService implements ArticleServiceInterface
 {
@@ -49,5 +50,39 @@ class ArticleService implements ArticleServiceInterface
         }
 
         return $articles;
+    }
+
+
+
+    public function updateStock(array $articles): array
+    {
+        $success = [];
+        $failed = [];
+
+        foreach ($articles as $articleData) {
+            $article = $this->articleRepository->find($articleData['id']);
+            if ($article) {
+                $this->articleRepository->updateQuantity($article, $articleData['quantite']);
+                $success[] = $article;
+            } else {
+                $failed[] = [
+                    "id" => $articleData['id'],
+                    "message" => "Article not found"
+                ];
+            }
+        }
+
+        return [
+            "success" => $success,
+            "failed" => $failed,
+            "message" => "Stock updated successfully"
+        ];
+    }
+
+
+    public function findByTitle(string $title): ?Article
+
+    {
+        return $this->articleRepository->findByTitle($title);
     }
 }

@@ -11,6 +11,8 @@ use Illuminate\Http\Request;
 use App\Enums\CompteStatus;
 use Illuminate\Validation\Rule;
 use App\Rules\TelephoneRule;
+use App\Facades\ClientServiceFacade;
+use App\Http\Resources\ClientDetteResource;
 
 
 
@@ -21,16 +23,16 @@ class ClientController extends Controller
      */
 
 
-        public function index(Request $request)
-        {
-            $validated = $request->validate([
-                'compte' => ['nullable', Rule::enum(CompteStatus::class)],
-            ]);
+    public function index(Request $request)
+    {
+        $validated = $request->validate([
+            'compte' => ['nullable', Rule::enum(CompteStatus::class)],
+        ]);
 
-            $compteStatus = isset($validated['compte']) ? CompteStatus::from($validated['compte']) : null;
-            $clients = ClientFacade::getAllClients($compteStatus);
-            return ClientResource::collection($clients);
-        }
+        $compteStatus = isset($validated['compte']) ? CompteStatus::from($validated['compte']) : null;
+        $clients = ClientFacade::getAllClients($compteStatus);
+        return ClientResource::collection($clients);
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -48,7 +50,6 @@ class ClientController extends Controller
     {
         //
         return ClientFacade::getClientById($id);
-
     }
 
     /**
@@ -58,7 +59,6 @@ class ClientController extends Controller
     {
         //
         return ClientFacade::updateClient($id, $request->validated());
-
     }
 
     /**
@@ -70,23 +70,53 @@ class ClientController extends Controller
     }
 
 
-    // public function findByTelephone(Request $request): JsonResponse
-    // {
-    //     $validated = $request->validate([
-    //         'telephone' => ['required', 'string', new TelephoneRule()],
-    //     ]);
+    public function findByTelephone(Request $request)
+    {
+        $validated = $request->validate([
+            'telephone' => ['required', 'string'], // Ajoutez vos règles de validation ici
+        ]);
 
-    //     try {
-    //         $client = $this->clientRepository->findByTelephone($validated['telephone']);
+        try {
+            $client = ClientServiceFacade::findByTelephone($validated['telephone']);
+            return response()->json([
+                'message' => 'Client trouvé avec succès.',
+                'data' => new ClientResource($client),
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Client non trouvé ou une erreur est survenue.',
+            ], 404);
+        }
+    }
 
-    //         return response()->json([
-    //             'message' => 'Client trouvé avec succès.',
-    //             'data' => new ClientResource($client),
-    //         ]);
-    //     } catch (\App\Exceptions\ClientNotFoundException $e) {
-    //         return response()->json([
-    //             'message' => $e->getMessage(),
-    //         ], 404);
-    //     }
-    // }
+    public function listClientsWithDebts(Request $request)
+    {
+        // $this->authorize('viewAny', Client::class);
+
+        $perPage = $request->input('per_page', 15); // Nombre d'éléments par page, par défaut 15
+        $clients = ClientFacade::getClientsWithDebts();
+
+        return ClientDetteResource::collection($clients);
+    }
+
+
+
+    public function showWithUser($id)
+    {
+        try {
+            $clientWithUser = ClientFacade::getClientWithUser($id);
+
+            return response()->json([
+                'status' => 200,
+                'data' => $clientWithUser,
+                'message' => 'Client trouvé'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 404,
+                'data' => null,
+                'message' => 'Objet non trouvé'
+            ], 404);
+        }
+    }
 }

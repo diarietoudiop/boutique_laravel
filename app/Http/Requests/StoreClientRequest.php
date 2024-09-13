@@ -31,7 +31,7 @@ class StoreClientRequest extends FormRequest
             'user' => ['sometimes', 'array'],
             'user[nom]' => ['string'],
             'user[prenom]' => [ 'string'],
-            'user[photo]' => ['string'],
+            'user[photo]' => ['image'],
             'user[email]' => ['string', 'max:255', 'unique:users,email'],
             'user[password]' => [ new PasswordRule(), 'confirmed'],
         ];
